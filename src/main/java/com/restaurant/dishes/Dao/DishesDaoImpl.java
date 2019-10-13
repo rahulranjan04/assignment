@@ -20,7 +20,7 @@ public class DishesDaoImpl implements DishesDao {
 	public long save(Dishes dishes) {
 
 		String sql = "INSERT INTO DISHES "
-				+ "(CREATION_DATE , DISH_IMAGE , INDICATOR,NUM_PEOPLE,INGREDIENTS,INSTRUCTIONS,DISHIMAGENAME ) VALUES (?, ?, ?, ?, ?, ?,?)";
+				+ "(CREATION_DATE , DISH_IMAGE , INDICATOR,NUM_PEOPLE,INGREDIENTS,INSTRUCTIONS,DISH_IMAGE_NAME ) VALUES (?, ?, ?, ?, ?, ?,?)";
 
 		int key = jdbcTemplate.update(sql, new Object[] { new Date(), dishes.getDishImage(), dishes.getIndicator(),
 				dishes.getNum_people(), dishes.getIngredients(), dishes.getInstructions(), dishes.getDishImageName() });
@@ -49,10 +49,11 @@ public class DishesDaoImpl implements DishesDao {
 	@Override
 	public void update(long id, Dishes dishes) {
 		String sql = "UPDATE DISHES "
-				+ "SET CREATION_DATE =?, DISH_IMAGE =?, INDICATOR=?,NUM_PEOPLE=?,INGREDIENTS=?,INSTRUCTIONS=? WHERE DISH_ID =?";
+				+ "SET CREATION_DATE =?, DISH_IMAGE =?, INDICATOR=?,NUM_PEOPLE=?,INGREDIENTS=?,INSTRUCTIONS=?,DISH_IMAGE_NAME=? WHERE DISH_ID =?";
 
-		jdbcTemplate.update(sql, new Object[] { new Date(), dishes.getDishImage(), dishes.getIndicator(),
-				dishes.getNum_people(), dishes.getIngredients(), dishes.getInstructions(), id });
+		jdbcTemplate.update(sql,
+				new Object[] { new Date(), dishes.getDishImage(), dishes.getIndicator(), dishes.getNum_people(),
+						dishes.getIngredients(), dishes.getInstructions(), dishes.getDishImageName(), id });
 
 	}
 
