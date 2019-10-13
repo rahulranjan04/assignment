@@ -5,147 +5,149 @@
 <title>Restaurant</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<script
-	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="/js/angular.min.js"></script>
+<script src="/js/jquery.min.js"></script>
 <script src="/js/controller.js"></script>
-<script src="/js/fileuplaod.js"></script>
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<script src="/js/fileupload.js"></script>
+<script src="/js/Service/service.js"></script>
+<script src="/js/Directive/directive.js"></script>
+<script src="/js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="/css/restaurant.css"
 	media="screen" />
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-</head>
-<body data-ng-controller="FileUploadController">
-	<div class="headerPage">
-		<a href="" class="logo"><img src="/images/home.png" alt=""
-			data-ng-click=getbackfunction() /></a>
-		<div class="header-right">
-			<a class="active" href="">Contact</a> <a href="">About</a>
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"
+	media="screen" />
+<body data-ng-app="app">
+	<div data-ng-controller="restaurantcontroller">
+		<div class="headerPage">
+			<a href="" class="logo"><img src="/images/home.jpg" alt=""
+				data-ng-click=getbackfunction() /></a>
+			<div class="header-right">
+				<a class="active" href="">Contact</a> <a href="">About</a>
+			</div>
 		</div>
-	</div>
-
-	<div class="container" data-ng-app="app">
-
-		<div data-ng-controller="getcontroller">
-			<input type="submit" name="add" value="Add Dish" id="addDish"
-				data-ng-click=addfunction()> 
-		<input type="submit"
-				name="back" value="back" id="backDish"
-				data-ng-click=getbackfunction()>
-		<input type="hidden" name="searchInput"  id="searchInput" data-ng-model="search">
-		<input type="hidden" name="submitSearch" value="Search" id="searchInput" data-ng-click=getsearchfunction()>  	
-		
-		<div class="alert alert-success" data-ng-show="showSuccessAlert">
-			<button type="button" class="close"
-				data-ng-click="switchBool('showSuccessAlert')">×</button>
-			<strong>Done!</strong> {{successTextAlert}}
-		</div>
-		<div class="table-users" 
-			data-ng-show="IsDisplay" data-ng-cloak id="showTable">
-			<div class="header" data-ng-init="getfunction()">Restaurant</div>
-			<table>
+		<div data-ng-controller="FileUploadController">
+			<table id="uploadTable">
 				<tr>
-					<th>Picture</th>
-					<th>Cuisine</th>
-					<th>Edit</th>
-					<th>Delete</th>
-				</tr>
-
-				<tr data-ng-repeat="restaurant in response track by $index">
-					<td><img src="/images/veg2.jpg" alt="" /></td>
-					<td><a data-ng-click=editfunction(true)>{{restaurant.dishImage}}</a></td>
-					<td><input type="submit" name="edit" value="EDIT"
-						data-ng-click=editfunction(false)></td>
-					<td><input type="submit" name="delete" value="DELETE"
-						data-ng-click=deletefunction()
-						data-confirm-click="Are you sure you wish to proceed?"></td>
+					<td><label for="myFileField">Select a file: </label></td>
+					<td><input type="file" data-file-model=myFile
+						class="form-control" id="myFileField" required="required" /></td>
+					<td><button data-ng-click="uploadFile()"
+							class="btn btn-primary">Upload File</button></td>
+					<td><img alt="" src="" id="process_img"
+						data-ng-show=process_img></td>
+					<td>
+						<div class="alert alert-success" data-ng-show="showSuccessAlert">
+							<button type="button" class="close"
+								data-ng-click="switchBool('showSuccessAlert')">×</button>
+							<strong>Done!</strong> {{successTextAlert}}
+						</div>
+					</td>
 				</tr>
 			</table>
 		</div>
-		</div>
-
-		<div data-ng-controller="postcontroller">
-			<form class="form-horizontal" name="customerForm"
-				data-ng-submit="submitForm()"></form>
-
-			<div class="col-sm-offset-2 col-sm-10">
-				<p>{{postResultMessage}}</p>
+		<form class="form-horizontal" name="dishForm"
+			enctype="multipart/form-data" id="dishForm"
+			data-ng-submit="submitForm()">
+			<div id="editTableMode">
+				<table>
+					<tr>
+						<td><input type="hidden" name="dishId" style="width: 110px"
+							id="dishId"></td>
+					</tr>
+					<tr>
+						<td><input type="hidden" name="fileNameUpload"
+							id="fileNameUpload" data-ng-model="restaurant.dishImageName"></td>
+					</tr>
+					<tr id="cuisnameEdit" class="cuisnameEdit">
+						<td><label>Cuisine Name</label></td>
+						<td><input type="text" name="cuisinename"
+							data-ng-model="restaurant.dishImage" required="required"></td>
+					</tr>
+					<tr>
+						<td id="indicatorEdit" class="indicatorEdit"><label>Indicator</label></td>
+						<td><input type="text" name="indicator" required="required"
+							data-ng-model="restaurant.indicator"></td>
+						<td id="peopleShowEdit" class="peopleShowEdit"><label>Number
+								of People</label></td>
+						<td><input type="text" name="people" required="required"
+							pattern="[0-9]{0,}"
+							oninvalid="this.setCustomValidity('Please enter only numeric value. Special character are not allowed.')"
+							oninput="setCustomValidity('')"
+							data-ng-model="restaurant.num_people"></td>
+					</tr>
+					<tr>
+						<td id="ingredientsEdit" class="ingredientsEdit"><label>Ingredients</label></td>
+						<td><textarea rows="3" cols="20" required="required"
+								name="ingredients" data-ng-model="restaurant.ingredients"></textarea></td>
+						<td id="instructionsEdit" class="instructionsEdit"><label>Instruction</label></td>
+						<td><textarea rows="3" cols="20" required="required"
+								name="instructions" data-ng-model="restaurant.instructions"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td><button class="btn btn-success" type="submit" name="save"
+								id="saveButton" value="SAVE">SAVE</button></td>
+					</tr>
+					<tr>
+						<td><button class="btn btn-success" type="submit"
+								name="update" id="updateButton" value="UPDATE">UPDATE</button></td>
+					</tr>
+				</table>
 			</div>
+		</form>
+		<div>
+			<table id="addData" style="align-self: center;">
+				<tr>
+					<td id="addDish"><button class="btn btn-success" type="submit"
+							name="add" value="Add Dish" data-ng-click=addfunction()>Add
+							Dish</button></td>
+					<td id="backDish"><button class="btn btn-info" type="submit"
+							name="back" value="back" data-ng-click=getbackfunction()>BACK</button></td>
+				</tr>
+			</table>
 		</div>
-		
-    <div>{{serverResponse}}</div>
-
-		<div class="table-users" data-ng-controller="postcontroller"
-			data-ng-hide="IsDisplay" style="width: 1000px" id="addTable">
-			<div class="header" data-ng-cloak>Restaurant</div>
-			<form class="form-horizontal" name="customerForm"
-				enctype="multipart/form-data" id="fileUploadForm"
-				data-ng-submit="submitForm()">
-				<div data-ng-show="customerForm.$submitted">error message</div>
-				<div style="height: 350px; background: #FFFFFF;">
-					<div id="viewTableMode">
-						<div id="imagedish" class="imagedish"><label></label></div>
-						<div id="cuisinename" class="cuisname"><label>Cuisine Name</label></div>
-						<div id="creationDate" class="creationDateShow"></div>
-						<div id="indicator" class="indicator"><label>Indicator</label></div>
-						<div id="people" class="peopleShow"><label>Number of People</label></div>
-						<div id="ingredients" class="ingredients"><label>Ingredients</label></div>
-						<div id="instructions" class="instructions"><label>Instruction</label></div>
-					</div>
-					<div id="editTableMode">
-						<input type="hidden" name="dishId" style="width: 110px"
-							id="dishId">
-						<div id="cuisnameEdit" class="cuisnameEdit">
-						<label>Cuisine Name</label>
-							<input type="text" name="cuisinename"
-								data-ng-model="restaurant.dishImage" required="required"
-								style="width: 110px">
-						</div>
-						<div id="indicatorEdit" class="indicatorEdit">
-						<label>Indicator</label>
-							<input type="text" name="indicator" required="required"
-								style="width: 110px" data-ng-model="restaurant.indicator">
-						</div>
-						<div id="peopleShowEdit" class="peopleShowEdit">
-						<label>Number of People</label>
-							<input type="text" name="people" style="width: 110px"
-								required="required" pattern="[0-9]{0,}"
-								oninvalid="this.setCustomValidity('Please enter only numeric value. Special character are not allowed.')"
-								oninput="setCustomValidity('')"
-								data-ng-model="restaurant.num_people">
-						</div>
-						<div id="ingredientsEdit" class="ingredientsEdit">
-						<label>Ingredients</label>
-						<textarea rows="3" cols="20" required="required"
-							name="ingredients" data-ng-model="restaurant.ingredients"></textarea></div>
-							<div id="instructionsEdit" class="instructionsEdit">
-							<label>Instruction</label>
-						<textarea rows="3" cols="20" required="required"
-							name="instructions" data-ng-model="restaurant.instructions"
-							></textarea></div>
-						<div id="buttonEdit" class="buttonEdit">	
-						<input type="submit" name="save" id="saveButton"
-							style="width: 110px" value="SAVE"> <input type="submit"
-							name="update" id="updateButton" style="width: 110px"
-							value="UPDATE"></div>
-					</div>
-
-				</div>
-			</form>
+		<div data-ng-init="getfunction()">
+			<table id="displayTable">
+				<tr data-ng-repeat="restaurant in response track by $index">
+					<td><img
+						data-ng-src="{{restaurant.dishImageName || 'images/giphy.gif'}}"
+						alt="" id="process_img"
+						data-ng-hide="restaurant.dishImageName == null"
+						data-ng-show="restaurant.dishImageName != null" /></td>
+					<td></td>
+					<td></td>
+					<td><a href="" data-ng-click=editfunction(true)>{{restaurant.dishImage}}</a></td>
+					<td></td>
+					<td><button class="btn btn-warning" type="submit" name="edit"
+							value="EDIT" data-ng-click=editfunction(false)>EDIT</button></td>
+					<td></td>
+					<td><button class="btn btn-danger" type="submit" name="delete"
+							value="DELETE" data-ng-click=deletefunction()
+							data-confirm-click="Are you sure you wish to proceed?">DELETE</button></td>
+				</tr>
+			</table>
 		</div>
-		<div class="panel panel-default" data-ng-controller="FileUploadController" id="uploadButton">
-        <div class="panel-body">
-            <form>
-                <div class="form-group">
-                    <label for="myFileField">Select a file: </label>
-                    <input type="file" data-file-model =myFile  class="form-control" id ="myFileField"/>
-                </div>
-                <button data-ng-click="uploadFile()" class = "btn btn-primary">Upload File</button>
-            </form>
-        </div>
-    </div>
-
+		<div id="viewTableMode">
+			<table>
+				<tr id="imagedish" class="imagedish">
+					<td><img src="" alt="" id="viewImageDish"></td>
+					<td id="ingredients" class="ingredients"><label>Ingredients</label></td>
+					<td id="instructions" class="instructions"><label>Instruction</label></td>
+				</tr>
+				<tr id="cuisinename" class="cuisname">
+					<td><label for="Cuisine Name">Cuisine Name</label></td>
+				</tr>
+				<tr id="creationDate" class="creationDateShow">
+					<td></td>
+				</tr>
+				<tr>
+					<td id="indicator" class="indicator"><label>Indicator</label></td>
+					<td id="people" class="peopleShow"><label>Number of
+							People</label></td>
+				</tr>
+			</table>
+		</div>
 	</div>
 </body>
+</head>
 </html>

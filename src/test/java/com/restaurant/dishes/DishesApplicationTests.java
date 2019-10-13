@@ -1,67 +1,63 @@
 package com.restaurant.dishes;
 
-import java.util.ArrayList;
-import java.util.Date;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+
+import java.util.Arrays;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.restaurant.dishes.Model.Dishes;
 import com.restaurant.dishes.Service.DishesServiceImpl;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(value = DishesApplication.class, secure = false)
+@RunWith(MockitoJUnitRunner.class)
 public class DishesApplicationTests {
 
-	@Autowired
-	private MockMvc mockMvc;
+	private static final java.util.Date Date = null;
 
-	@MockBean
-	private DishesServiceImpl dishesService;
+	private static DishesServiceImpl daoImpl;
+	private static Dishes dishes1;
+	private static Dishes dishes2;
 
-	@Test
-	public void contextLoads() throws Exception {
+	@BeforeClass
+	public static void init() {
 
-		Dishes dishes = new Dishes();
-		dishes.setDishId(1258);
-		dishes.setDishImage("PANEER LASANGE");
-		dishes.setIndicator("VEG");
-		dishes.setNum_people(3);
-		dishes.setIngredients("no");
-		dishes.setInstructions("yes");
+		daoImpl = mock(DishesServiceImpl.class);
 
-		List<Dishes> mockCourse = new ArrayList<Dishes>();
-		mockCourse.add(dishes);
+		dishes1 = new Dishes();
+		dishes1.setCreationDate(Date);
+		dishes1.setDishImage("PIZZA");
+		dishes1.setIndicator("VEG");
+		dishes1.setIngredients("Garlic,Onion,Mushroom,Cheese,ddddddddddddddddddddddddddddddddddd");
+		dishes1.setInstructions("cook nicely");
+		dishes1.setNum_people(4);
+		dishes1.setDishImageName("images/giphy.gif");
 
-		String exampleCourseJson = "{\"dishId\":\"1258\"}";
+		dishes1 = new Dishes();
+		dishes1.setCreationDate(Date);
+		dishes1.setDishImage("CHICKEN");
+		dishes1.setIndicator("NON-VEG");
+		dishes1.setIngredients("Chicken,pepper");
+		dishes1.setInstructions("Take Fresh Chicken and cook nicely");
+		dishes1.setNum_people(5);
+		dishes1.setDishImageName("images/900a5b9352d03aee3c00637c646c0f7b.gif");
 
-		Mockito.when(dishesService.list()).thenReturn(mockCourse);
+		dishes2 = new Dishes();
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/home/dishes/").accept(MediaType.APPLICATION_JSON);
-
-		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-		System.out.println("response:::::" + result.getResponse());
-		String expected = "{\"dishId\":2690,\"dishImage\":\"PANEER LASANGE\",\"indicator\":\"VEG\",\"num_people\":3,\"ingredients\":\"no\",\"instructions\":\"yes\"}";
-
-		// {"id":"Course1","name":"Spring","description":"10 Steps, 25 Examples and 10K
-		// Students","steps":["Learn Maven","Import Project","First Example","Second
-		// Example"]}
-
-		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
+		Mockito.lenient().when(daoImpl.list()).thenReturn(Arrays.asList(dishes1, dishes2));
+		Mockito.lenient().when(daoImpl.get(2)).thenReturn(dishes1);
 	}
 
+	@Test
+	public void findAll() {
+		List<Dishes> getAll = daoImpl.list();
+		assertNotNull(getAll);
+		assertEquals(2, getAll.size());
+	}
 }
