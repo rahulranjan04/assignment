@@ -1,0 +1,12 @@
+# assignment
+
+#Secure api
+
+username:admin
+password:password
+
+
+#Swagger Documentation
+http://localhost:8080/swagger-ui.html
+
+/*remove ddl after first start up*/
