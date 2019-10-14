@@ -40,7 +40,7 @@ public class DishesDaoImpl implements DishesDao {
 
 	@Override
 	public List<Dishes> list() {
-		String sql = "SELECT * FROM DISHES ";
+		String sql = "SELECT * FROM DISHES ORDER BY CREATION_DATE DESC";
 
 		List<Dishes> dishes = jdbcTemplate.query(sql, new Object[] {}, new BeanPropertyRowMapper<Dishes>(Dishes.class));
 		return dishes;

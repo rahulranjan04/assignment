@@ -28,7 +28,7 @@ public class Upload {
 				MultipartFile mFile = mRequest.getFile(itr.next());
 				String fileName = mFile.getOriginalFilename();
 				File relativeFile = new File("/images/");
-				java.nio.file.Path path = Paths.get("src/main/resources/static/images/" + fileName);
+				java.nio.file.Path path = Paths.get("target/classes/static/images/" + fileName);
 				Files.deleteIfExists(path);
 				InputStream in = mFile.getInputStream();
 				Files.copy(in, path);
